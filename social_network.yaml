@@ -1,0 +1,85 @@
+# Social Network API (OpenAPI 3.0)
+openapi: 3.0.0
+info:
+  title: Social Network API
+  version: 1.0.0
+  description: Пример API для соцсети на C++ с YAML
+
+servers:
+  - url: http://localhost:8000
+    description: Локальный сервер
+
+# Модели данных
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: "ivan_ivanov"
+        age:
+          type: integer
+          example: 25
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-10-01T12:00:00Z"
+        following:
+          type: array
+          items:
+            type: integer
+          example: [2, 3]
+        followers:
+          type: array
+          items:
+            type: integer
+          example: [4, 5]
+      
+    UserId:
+      type: object
+      required: 
+        - id
+      properties:
+        id:
+          type: integer
+          example: 1
+
+# Эндпоинты
+paths:
+  /users/{id}:
+    get:
+      summary: Получить данные пользователя
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Данные пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Пользователь не найден
+
+  /users/following:
+    post:
+      summary: Список подписок пользователя
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserId'
+      responses:
+        '200':
+          description: Массив ID подписок
+          content:
+            application/json:
+              example: [2, 3]
